@@ -1,0 +1,48 @@
+this is how my application controller looks
+def hashnew
+    @userhash = Userhash.new
+    @user = User.new
+    @userhashes = Userhash.all
+    @userhash.identifier = rand(50**10).to_s(30)
+    hashExists = false
+    while !hashExists
+      @userhashes.each do |userhash|
+        if userhash.identifier == @userhash.identifier
+          @userhash.identifier = rand(50**10).to_s(30)
+          hashExists = true
+        end
+      end
+      if !hashExists
+        break
+      end
+      hashExists = false
+    end
+    @userhash.save
+    @user.userhashes.create(:identifier => @userhash.identifier)
+  end
+  def after_sign_up_path_for(resource)
+    if resource.is_a? User
+      hashnew
+    else
+      super
+    end
+  end
+
+this is the show in my users controller
+def show
+    @user = User.find(params[:id])
+    @userhashes = @user.userhashes.all
+  end
+
+this is in my routes
+
+resources :users, :only => [:index, :show] do
+    resources :pictures
+    resources :userhashes
+  end
+
+and this code is in my show for users
+<% @userhashes.each do |userhash| %>
+	<p><%= userhash.identifier %></p>
+<% end %>
+It looks like the show isn't doing anything
