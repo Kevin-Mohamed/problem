@@ -17,7 +17,6 @@ def hashnew
       end
       hashExists = false
     end
-    @userhash.save
     @user.userhashes.create(:identifier => @userhash.identifier)
   end
   def after_sign_up_path_for(resource)
